@@ -7,7 +7,8 @@ import socketio
 # CONFIGURATION
 # ==========================================
 # Obtain this token from Streamlabs Dashboard -> Settings -> API Settings -> API Tokens -> Socket API Token
-STREAMLABS_SOCKET_TOKEN = "YOUR_STREAMLABS_SOCKET_TOKEN_HERE"
+with open('token.txt','r') as token:
+    STREAMLABS_SOCKET_TOKEN = "YOUR_STREAMLABS_SOCKET_TOKEN_HERE"
 
 # Create Socket.IO client instance with automatic ping heartbeats and reconnects
 sio = socketio.Client(
