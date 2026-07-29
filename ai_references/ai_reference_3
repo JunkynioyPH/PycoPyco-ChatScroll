@@ -1,0 +1,40 @@
+import asyncio
+from twitchio.ext import commands
+import pytchat
+
+# 1. Setup YouTube Chat
+YOUTUBE_VIDEO_ID = "YbMTyYqeCvk"
+
+async def youtube_chat_listener():
+    # Run pytchat in a background thread to keep it async
+    chat = pytchat.create(video_id=YOUTUBE_VIDEO_ID)
+    while chat.is_alive():
+        for c in chat.get().sync_items():
+            print(f"💬 [YOUTUBE] {c.author.name}: {c.message}")
+        await asyncio.sleep(1)
+
+# 2. Setup Twitch Chat
+class TwitchBot(commands.Bot):
+    def __init__(self):
+        # need to make a twitch bot or somethging
+        super().__init__(token='', prefix='!', initial_channels=['YOUR_TWITCH_CHANNEL'])
+
+    async def event_ready(self):
+        print("✅ Twitch Chat Connected!")
+
+    async def event_message(self, message):
+        if message.echo:
+            return
+        print(f"💬 [TWITCH] {message.author.name}: {message.content}")
+
+# 3. Run both concurrently
+async def main():
+    bot = TwitchBot()
+    # Schedule YouTube and Twitch tasks together
+    await asyncio.gather(
+        bot.start(),
+        youtube_chat_listener()
+    )
+
+if __name__ == "__main__":
+    asyncio.run(main())
